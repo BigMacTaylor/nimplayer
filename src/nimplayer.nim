@@ -83,24 +83,20 @@ proc onMessage(bus: Bus, msg: gst.Message, data: CustomData) =
 
 
   if typ == {gst.MessageFlag.stateChanged}:
-    #if msg[].impl[].src of "playbin":
-     # echo "playon"
-
-    if msg.src.name() != "playbin":
+    if msg.impl.src.name() != "playbin":
       return
 
     var old, new, pending: State
     msg.parseStateChanged(old, new, pending)
     data.state = new
 
-    echo "Object kind:", typ, " name:", msg.src.name()
+    echo "Object kind:", typ, " name:", msg.impl.src.name()
 
-    var srcElement = msg[].impl[].src
-    let eName = gst_object_get_name(srcElement)
+    var srcElement = msg.impl.src
+    let eName = getName(srcElement)
     if srcElement.isNil:
       return
 
-    #let eName = getName(srcElement)
     echo eName
 
     #let src = cast[Source](msg.impl.src)
